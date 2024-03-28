@@ -4,7 +4,7 @@ import textwrap
 from getopt import getopt
 from zipfile import ZipFile
 
-from cgi import escape
+from html import escape
 from itertools import count as counter
 from itertools import chain
 from collections import defaultdict
@@ -35,7 +35,8 @@ def simple():
 	global SIMPLE
 	return SIMPLE
 
-nextInt = counter().next
+nextInt = counter().__next__
+# nextInt = counter().next
 
 def ifseteq(h, k, v):
 	return k in h and h[k] == v
