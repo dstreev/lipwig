@@ -6,6 +6,7 @@ type dot >/dev/null 2>&1 || { echo >&2 "Cannot find dot (graphviz).. Aborting.";
 
 TYPE=svg
 LIPWIG_HOME=${LIPWIG_HOME:-'.'}
+FIX_SOURCE=false
 while [[ $# -gt 0 ]]
 do
 key="$1"
@@ -28,6 +29,9 @@ case $key in
     --default)
     DEFAULT=YES
     ;;
+    -fs|--fix-source)
+    FIX_SOURCE=true
+    ;;
     *)
     # unknown option
     ;;
@@ -44,6 +48,32 @@ if [ -z "$INPUT" ]; then
 	echo "	-o|--output	output file"
 	echo "	-t|--type	filetype of output. All types supported by graphviz/dot command"
 	exit 1;
+fi
+
+# Fix json file when it has a bunch of escape characters in it from the output of Hue or other sources.
+if [ "$FIX_SOURCE" = true ]; then
+  cp $INPUT $INPUT.fixed
+  INPUT=$INPUT.fixed
+
+  if [[ "$OSTYPE" == "darwin"* ]]; then
+    # Mac OSX
+    sed -i '' 's/\\n//g' $INPUT
+    sed -i '' 's/\\""/"/g' $INPUT
+    sed -i '' 's/}"",/},/g' $INPUT
+    sed -i '' 's/""/"/g' $INPUT
+    sed -i '' 's/^"//g' $INPUT
+    sed -i '' 's/"$//g' $INPUT
+    sed -i '' 's/"{ /{/g' $INPUT
+  else
+    # ...
+    sed -i 's/\\n//g' $INPUT
+    sed -i 's/\\""/"/g' $INPUT
+    sed -i 's/}"",/},/g' $INPUT
+    sed -i 's/""/"/g' $INPUT
+    sed -i 's/^"//g' $INPUT
+    sed -i 's/"$//g' $INPUT
+    sed -i 's/"{ /{/g' $INPUT
+  fi
 fi
 
 if [ -z "$OUTPUT" ]; then
