@@ -26,9 +26,6 @@ case $key in
     TYPE="$2"
     shift # past argument
     ;;
-    --default)
-    DEFAULT=YES
-    ;;
     -fs|--fix-source)
     FIX_SOURCE=true
     ;;
@@ -43,10 +40,11 @@ if [ -z "$INPUT" ]; then
 	echo "Missing input file.";
 	echo "lipwig <options> -i explain.json"
 	echo "Options:"
-	echo "	-s|--simple	simple output"
-	echo "	-i|--input	input json file containing apache hive explain plan"
-	echo "	-o|--output	output file"
-	echo "	-t|--type	filetype of output. All types supported by graphviz/dot command"
+	echo "     -s|--simple	simple output"
+	echo "     -i|--input	input json file containing apache hive explain plan"
+	echo "     -o|--output	output file"
+	echo "     -fs|--fix-source  fix source json file with escape characters"
+	echo "     -t|--type	filetype of output. All types supported by graphviz/dot command"
 	exit 1;
 fi
 
